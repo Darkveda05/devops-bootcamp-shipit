@@ -15,5 +15,7 @@ jobs:
        with:
          path: launchpad/dist
      - uses: actions/deploy-pages@v5steps:
-      - run: sleep 30
-      - run: echo "Ship it!"
+# tambah di bawah sekali
+permissions:
+  pages: write
+  id-token: write
