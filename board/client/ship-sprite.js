@@ -9,6 +9,7 @@ import { createShip, preloadShipTemplates, disposeShip } from './ship-mesh.js';
 const SIZE = 64;
 const cache = new Map(); // `${shipModel}|${color}` -> Promise<string|null>
 let ctx; // lazy { renderer, scene, camera }; null = WebGL unavailable
+let templatesPromise; // cache the promise; all sprite renders share one load
 
 function setup() {
   try {
@@ -29,11 +30,13 @@ function setup() {
 }
 
 async function render(shipModel, color) {
-  const templates = await preloadShipTemplates();
+  templatesPromise ??= preloadShipTemplates();
+  const templates = await templatesPromise;
   if (ctx === undefined) ctx = setup();
   if (!ctx) return null;
   const template = templates.get(shipModel) || templates.get('fighter');
   const ship = createShip({ callsign: '', color, shipModel, template });
+  ship.traverse((o) => { if (o.isSprite) o.visible = false; }); // hide the "@callsign" label — sprites are ship-only
   ship.rotation.y = Math.PI / 2; // side profile, nose toward +x — matches track direction
   ctx.scene.add(ship);
   ctx.renderer.render(ctx.scene, ctx.camera);
