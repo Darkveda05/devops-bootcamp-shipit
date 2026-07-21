@@ -1,7 +1,7 @@
 {
   "shipName": "DevOps",
-  "color": "#22d3ee",
-  "shipModel": "fighter",
+  "color": "Orange",
+  "shipModel": "scout",
   "emblem": "comet"
 }
 
